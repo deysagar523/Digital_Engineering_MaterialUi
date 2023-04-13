@@ -12,6 +12,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
+
 import Home from "../Components/Home";
 import About from "../Components/About";
 import Services from "../Components/Services";
@@ -118,6 +119,7 @@ const Dashboard = () => {
                       handleChange(e, 5);
                     }}
                     variant="contained"
+                    style={{marginRight:"1rem"}}
                   >
                     Login
                   </Button>

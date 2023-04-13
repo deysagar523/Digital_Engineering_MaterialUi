@@ -6,12 +6,16 @@ import {
   Paper,
   TextField,
   Typography,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-const Login = ({loginHandler,handleChange}) => {
+const Login = ({ loginHandler, handleChange }) => {
   const paperStyle = {
     padding: 20,
     height: 290,
@@ -32,6 +36,7 @@ const Login = ({loginHandler,handleChange}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [alert, setAlert] = useState(false);
   const formik = useFormik({
@@ -49,7 +54,7 @@ const Login = ({loginHandler,handleChange}) => {
           "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
         ),
     }),
-    onSubmit: (value,e) => {
+    onSubmit: (value, e) => {
       setEmail(value.email);
       setPassword(value.password);
 
@@ -62,11 +67,11 @@ const Login = ({loginHandler,handleChange}) => {
       if (user) {
         // console.log(user.userName);
         setIsSubmitted(1);
-        sessionStorage.setItem("isLoggedIn",JSON.stringify(1));
+        sessionStorage.setItem("isLoggedIn", JSON.stringify(1));
         sessionStorage.setItem("User", JSON.stringify(value));
         sessionStorage.setItem("userName", JSON.stringify(user.userName));
         loginHandler();
-        handleChange(e,0);
+        handleChange(e, 0);
       } else {
         setIsSubmitted(-1);
       }
@@ -78,16 +83,19 @@ const Login = ({loginHandler,handleChange}) => {
       formik.resetForm();
     },
   });
+  const toggleShowPassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
   return (
     <>
-      {isSubmitted === 1 && (
-        <Alert severity="success">Sign In Successfully</Alert>
-      )}
-      {isSubmitted === -1 && (
-        <Alert severity="error">Email or Password is wrong</Alert>
-      )}
       <Grid>
         <Paper style={paperStyle} elevation={12}>
+          {isSubmitted === 1 && (
+            <Alert severity="success">Sign In Successfully</Alert>
+          )}
+          {isSubmitted === -1 && (
+            <Alert severity="error">Email or Password is wrong</Alert>
+          )}
           <h2 style={headerStyle}>Log In</h2>
           <Typography variant="heading" sx={{ textAlign: "center" }}>
             Login With Us
@@ -110,7 +118,20 @@ const Login = ({loginHandler,handleChange}) => {
               id="outlined-basic"
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={toggleShowPassword}>
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -118,15 +139,16 @@ const Login = ({loginHandler,handleChange}) => {
               helperText={formik.touched.password && formik.errors.password}
               fullWidth
             ></TextField>
-
-            <Button
-              style={buttonStyle}
-              variant="outlined"
-              type="submit"
-              color="secondary"
-            >
-              Submit
-            </Button>
+            <div style={{ textAlign: "center" }}>
+              <Button
+                style={buttonStyle}
+                variant="outlined"
+                type="submit"
+                color="secondary"
+              >
+                Log In
+              </Button>
+            </div>
           </form>
         </Paper>
       </Grid>

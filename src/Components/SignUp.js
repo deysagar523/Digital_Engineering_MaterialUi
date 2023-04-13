@@ -6,7 +6,12 @@ import {
   Paper,
   TextField,
   Typography,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -39,6 +44,7 @@ const SignUp = ({ handleChange }) => {
       ? []
       : JSON.parse(localStorage.getItem("List"))
   );
+  const [showPassword, setShowPassword] = useState(false);
   const [alert, setAlert] = useState(false);
 
   const formik = useFormik({
@@ -69,30 +75,40 @@ const SignUp = ({ handleChange }) => {
           "Phone number must be a valid Indian phone number"
         ),
     }),
-    onSubmit: (value,e) => {
+    onSubmit: (value, e) => {
       setUserName(value.userName);
       setEmail(value.email);
       setPassword(value.password);
       setConfirmPassword(value.confirmPassword);
       setPhone(value.phone);
       console.log(value, "formik");
-      const newArr = arr;
-      newArr.push(value);
-      setAlert(true);
-      setTimeout(() => {
-        setAlert(false);
-      }, 3000);
-      setArr(newArr);
-      localStorage.setItem("List", JSON.stringify(newArr));
-      handleChange(e,5);
-      formik.resetForm();
+      const data1 = JSON.parse(localStorage.getItem("List")) || [];
+      //console.log(data1);
+      const user = data1.find((u) => u.email === value.email);
+      if (user) {
+        setAlert(true);
+        setTimeout(() => {
+          setAlert(false);
+        }, 3000);
+      } else {
+        const newArr = arr;
+        newArr.push(value);
+
+        setArr(newArr);
+        localStorage.setItem("List", JSON.stringify(newArr));
+        handleChange(e, 5);
+        formik.resetForm();
+      }
     },
   });
+  const toggleShowPassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
   return (
     <>
-      {alert && <Alert severity="success">Form Submitted</Alert>}
       <Grid>
         <Paper style={paperStyle} elevation={12}>
+          {alert && <Alert severity="error">Email Id Already Exists</Alert>}
           <h2 style={headerStyle}>Sign Up</h2>
           <Typography variant="heading" sx={{ textAlign: "center" }}>
             Sign Up With Us
@@ -127,6 +143,20 @@ const SignUp = ({ handleChange }) => {
               id="outlined-basic"
               name="password"
               label="Password"
+              type={showPassword ? "text" : "password"}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={toggleShowPassword}>
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -162,14 +192,16 @@ const SignUp = ({ handleChange }) => {
               helperText={formik.touched.phone && formik.errors.phone}
               fullWidth
             ></TextField>
-            <Button
-              style={buttonStyle}
-              variant="outlined"
-              type="submit"
-              color="secondary"
-            >
-              Submit
-            </Button>
+            <div style={{ textAlign: "center" }}>
+              <Button
+                style={buttonStyle}
+                variant="outlined"
+                type="submit"
+                color="secondary"
+              >
+                Sign Up
+              </Button>
+            </div>
           </form>
         </Paper>
       </Grid>

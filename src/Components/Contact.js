@@ -14,7 +14,7 @@ import * as Yup from "yup";
 const Contact = () => {
   const paperStyle = {
     padding: 20,
-    height: 500,
+    height: 410,
     width: "350px",
     margin: "20px auto",
   };
@@ -70,7 +70,7 @@ const Contact = () => {
         <Paper style={paperStyle} elevation={12}>
           <Avatar style={avatarStyle}></Avatar>
           <h2 style={headerStyle}>Contact Us</h2>
-          <Typography variant="h4" sx={{ textAlign: "center" }}>
+          <Typography variant="heading" sx={{ textAlign: "center" }}>
             Fill the form given below
           </Typography>
           <form onSubmit={formik.handleSubmit}>
@@ -110,14 +110,16 @@ const Contact = () => {
               helperText={formik.touched.feedback && formik.errors.feedback}
               fullWidth
             ></TextField>
-            <Button
-              style={buttonStyle}
-              variant="outlined"
-              type="submit"
-              color="secondary"
-            >
-              Submit
-            </Button>
+            <div style={{textAlign:"center"}}>
+              <Button
+                style={buttonStyle}
+                variant="outlined"
+                type="submit"
+                color="secondary"
+              >
+                Submit
+              </Button>
+            </div>
           </form>
         </Paper>
       </Grid>
