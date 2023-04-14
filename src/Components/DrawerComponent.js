@@ -10,29 +10,76 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-const DrawerComponent = ({ handleChange, logoutHandler, isLoggedIn }) => {
+const DrawerComponent = ({ handleLinkClick, logoutHandler, isLoggedIn }) => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const tabs = [
-    "Home",
-    "About Us",
-    "Services",
-    "Products",
-    "Contact Us",
-    "Login",
-    "Sign Up",
+    {
+      to: "/",
+      element: "Home",
+    },
+    {
+      to: "/about",
+      element: "About Us",
+    },
+    {
+      to: "/services",
+      element: "Services",
+    },
+
+    {
+      to: "/products",
+      element: "Products",
+    },
+    {
+      to: "/contact",
+      element: "Contact Us",
+    },
+    {
+      to: "/login",
+      element: "Login",
+    },
+    {
+      to: "/signup",
+      element: "Signup",
+    },
   ];
+
   const tabsLogin = [
-    "Home",
-    "About Us",
-    "Services",
-    "Products",
-    "Contact Us",
-    "Log out",
+    {
+      to: "/",
+      element: "Home",
+    },
+    {
+      to: "/about",
+      element: "About Us",
+    },
+    {
+      to: "/services",
+      element: "Services",
+    },
+
+    {
+      to: "/products",
+      element: "Products",
+    },
+    {
+      to: "/contact",
+      element: "Contact Us",
+    },
+    {
+      to: "/login",
+      element: "Log Out",
+    },
   ];
-  console.log(isLoggedIn);
-  const logout = () => {
+  // console.log(isLoggedIn);
+  const logout = (link) => {
     logoutHandler();
+    handleLinkClick(link);
+  };
+  const clickHandler = (link) => {
+    handleLinkClick(link);
   };
   return (
     <>
@@ -47,19 +94,19 @@ const DrawerComponent = ({ handleChange, logoutHandler, isLoggedIn }) => {
           <List>
             {tabsLogin.map((tab, index) => (
               <ListItemButton key={index}>
-                <ListItemIcon>
-                  {index === tabsLogin.length - 1 ? (
-                    <ListItemText onClick={logout}>{tab}</ListItemText>
-                  ) : (
-                    <ListItemText
-                      onClick={(e) => {
-                        handleChange(e, index);
-                      }}
-                    >
-                      {tab}
-                    </ListItemText>
-                  )}
-                </ListItemIcon>
+                {index === tabsLogin.length - 1 ? (
+                  <Link to={tab.to} onClick={() => logout(tab.to)}>
+                    <ListItemIcon>
+                      <ListItemText>{tab.element}</ListItemText>
+                    </ListItemIcon>
+                  </Link>
+                ) : (
+                  <Link to={tab.to} onClick={() => clickHandler(tab.to)}>
+                    <ListItemIcon>
+                      <ListItemText>{tab.element}</ListItemText>
+                    </ListItemIcon>
+                  </Link>
+                )}
               </ListItemButton>
             ))}
 
@@ -71,15 +118,11 @@ const DrawerComponent = ({ handleChange, logoutHandler, isLoggedIn }) => {
           <List>
             {tabs.map((tab, index) => (
               <ListItemButton key={index}>
-                <ListItemIcon>
-                  <ListItemText
-                    onClick={(e) => {
-                      handleChange(e, index);
-                    }}
-                  >
-                    {tab}
-                  </ListItemText>
-                </ListItemIcon>
+                <Link to={tab.to} onClick={() => clickHandler(tab.to)}>
+                  <ListItemIcon>
+                    <ListItemText>{tab.element}</ListItemText>
+                  </ListItemIcon>
+                </Link>
               </ListItemButton>
             ))}
           </List>

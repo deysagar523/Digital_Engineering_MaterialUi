@@ -9,13 +9,14 @@ import {
   IconButton,
   InputAdornment,
 } from "@mui/material";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-const Login = ({ loginHandler, handleChange }) => {
+const Login = ({ loginHandler,handleLinkClick }) => {
   const paperStyle = {
     padding: 20,
     height: 290,
@@ -37,7 +38,7 @@ const Login = ({ loginHandler, handleChange }) => {
   const [password, setPassword] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
-
+  const navigate = useNavigate();
   const [alert, setAlert] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -71,7 +72,8 @@ const Login = ({ loginHandler, handleChange }) => {
         sessionStorage.setItem("User", JSON.stringify(value));
         sessionStorage.setItem("userName", JSON.stringify(user.userName));
         loginHandler();
-        handleChange(e, 0);
+        navigate("/");
+        handleLinkClick("/");
       } else {
         setIsSubmitted(-1);
       }

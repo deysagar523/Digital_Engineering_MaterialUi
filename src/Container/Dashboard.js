@@ -12,7 +12,15 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  NavLink,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
 import Home from "../Components/Home";
 import About from "../Components/About";
 import Services from "../Components/Services";
@@ -21,6 +29,8 @@ import Contact from "../Components/Contact";
 import DrawerComponent from "../Components/DrawerComponent";
 import SignUp from "../Components/SignUp";
 import Login from "../Components/Login";
+import AntdForm from "../Components/AntdForm";
+import "../App.css";
 
 const Dashboard = () => {
   const [value, setValue] = useState(0);
@@ -29,19 +39,33 @@ const Dashboard = () => {
       ? JSON.parse(sessionStorage.getItem("isLoggedIn"))
       : 0
   );
-  const [currentTab, setCurrentTab] = useState(
-    sessionStorage.getItem("currentTab")
-      ? JSON.parse(sessionStorage.getItem("currentTab"))
-      : 0
+  // const [currentTab, setCurrentTab] = useState(
+  //   sessionStorage.getItem("currentTab")
+  //     ? JSON.parse(sessionStorage.getItem("currentTab"))
+  //     : 0
+  // );
+  const [activeLink, setActiveLink] = useState(
+    sessionStorage.getItem("link") ? sessionStorage.getItem("link") : "/"
   );
 
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
-  const handleChange = (e, val) => {
-    setValue(val);
-    setCurrentTab(val);
-    sessionStorage.setItem("currentTab", JSON.stringify(val));
-  };
+  // const handleChange = (e, val) => {
+  //   setValue(val);
+  //   setCurrentTab(val);
+  //   sessionStorage.setItem("currentTab", JSON.stringify(val));
+  // };
+  // const linkStyle = {
+  //   color: "white",
+  //   textDecoration: "none",
+  //   marginRight: "20px",
+  //   ":hover": {
+  //     color: "blue",
+  //   },
+  // };
+  // const activeLinkStyle = {
+  //   fontWeight: "bold",
+  // };
   const TabPanel = (props) => {
     const { children, value, index } = props;
     // console.log(value,index);
@@ -55,17 +79,27 @@ const Dashboard = () => {
       </div>
     );
   };
+
   const logoutHandler = () => {
     sessionStorage.removeItem("User");
     sessionStorage.removeItem("isLoggedIn");
     sessionStorage.removeItem("userName");
     setIsLoggedIn(0);
   };
+
   const loginHandler = () => {
     setIsLoggedIn(1);
   };
+  const redirectToLoginHandler = (link) => {
+    loginHandler();
+    handleLinkClick(link);
+  };
+  const handleLinkClick = (link) => {
+    setActiveLink(link);
+    sessionStorage.setItem("link", link);
+  };
   return (
-    <>
+    <Router>
       <AppBar sx={{ background: "red" }} position="static">
         <Toolbar>
           {isMatch ? (
@@ -78,7 +112,7 @@ const Dashboard = () => {
                 Dashboard
               </Typography>
               <DrawerComponent
-                handleChange={handleChange}
+                handleLinkClick={handleLinkClick}
                 logoutHandler={logoutHandler}
                 isLoggedIn={isLoggedIn}
               />
@@ -92,44 +126,108 @@ const Dashboard = () => {
               <Typography variant="h6" component="div" sx={{ flexGrow: 2 }}>
                 Dashboard
               </Typography>
-              <Tabs
+              {/* <Tabs
                 textColor="white"
                 indicatorColor="primary"
                 sx={{ marginBottom: "1%", paddingTop: "1%" }}
                 value={currentTab}
                 onChange={handleChange}
+              > */}
+              <Link
+                to="/"
+                exact
+                onClick={() => handleLinkClick("/")}
+                className={activeLink === "/" ? "link active" : "link "}
               >
-                <Tab label="Home"></Tab>
+                Home
+              </Link>
+              <Link
+                to="/about"
+                onClick={() => handleLinkClick("/about")}
+                className={activeLink === "/about" ? "link active" : "link "}
+              >
+                About Us
+              </Link>
+
+              <Link
+                to="/services"
+                onClick={() => handleLinkClick("/services")}
+                className={activeLink === "/services" ? "link active" : "link "}
+              >
+                Services
+              </Link>
+
+              <Link
+                to="/products"
+                onClick={() => handleLinkClick("/products")}
+                className={activeLink === "/products" ? "link active" : "link "}
+              >
+                Products
+              </Link>
+
+              <Link
+                to="/contact"
+                onClick={() => handleLinkClick("/contact")}
+                className={activeLink === "/contact" ? "link active" : "link "}
+              >
+                Contact Us
+              </Link>
+              <Link
+                to="/antd"
+                onClick={() => handleLinkClick("/antd")}
+                className={activeLink === "/antd" ? "link active" : "link "}
+              >
+                AntdForm
+              </Link>
+              {/* <Tab label="Home"></Tab>
                 <Tab label="About Us"></Tab>
                 <Tab label="Services"></Tab>
                 <Tab label="Producs"></Tab>
-                <Tab label="Contact Us"></Tab>
-              </Tabs>
+                <Tab label="Contact Us"></Tab> */}
+              {/* </Tabs> */}
               {isLoggedIn ? (
                 <>
                   <Button onClick={logoutHandler} variant="contained">
-                    Logout
+                    <NavLink
+                      to="/login"
+                      style={{ textDecoration: "none", color: "white" }}
+                      onClick={() => redirectToLoginHandler("/login")}
+                    >
+                      Log Out
+                    </NavLink>
                   </Button>
                 </>
               ) : (
                 <>
                   {" "}
                   <Button
-                    onClick={(e) => {
-                      handleChange(e, 5);
-                    }}
+                    // onClick={(e) => {
+                    //   handleChange(e, 5);
+                    // }}
                     variant="contained"
-                    style={{marginRight:"1rem"}}
+                    style={{ marginRight: "1rem" }}
                   >
-                    Login
+                    <NavLink
+                      to="/login"
+                      style={{ textDecoration: "none", color: "white" }}
+                      onClick={() => handleLinkClick("/login")}
+                    >
+                      Log In
+                    </NavLink>
                   </Button>
                   <Button
-                    onClick={(e) => {
-                      handleChange(e, 6);
-                    }}
+                    // onClick={(e) => {
+                    //   handleChange(e, 6);
+                    // }}
                     variant="contained"
                   >
-                    SignUp
+                    <NavLink
+                      to="/signup"
+                      style={{ textDecoration: "none", color: "white" }}
+                      onClick={() => handleLinkClick("/signup")}
+                    >
+                      Sign Up
+                    </NavLink>
                   </Button>
                 </>
               )}
@@ -137,7 +235,7 @@ const Dashboard = () => {
           )}
         </Toolbar>
       </AppBar>
-      <div>
+      {/* <div>
         <TabPanel value={currentTab} index={0}>
           <Home isLoggedIn={isLoggedIn} />
         </TabPanel>
@@ -159,8 +257,32 @@ const Dashboard = () => {
         <TabPanel value={currentTab} index={6}>
           <SignUp handleChange={handleChange} />
         </TabPanel>
-      </div>
-    </>
+      </div> */}
+      <Routes>
+        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} exact />
+        <Route path="/about" element={<About />} />
+
+        <Route path="/services" element={<Services />} />
+
+        <Route path="/products" element={<Product />} />
+
+        <Route path="/contact" element={<Contact />} />
+        <Route
+          path="/login"
+          element={
+            <Login
+              loginHandler={loginHandler}
+              handleLinkClick={handleLinkClick}
+            />
+          }
+        />
+        <Route
+          path="/signup"
+          element={<SignUp handleLinkClick={handleLinkClick} />}
+        />
+        <Route path="/antd" element={<AntdForm />} />
+      </Routes>
+    </Router>
   );
 };
 
